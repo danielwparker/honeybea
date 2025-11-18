@@ -42,17 +42,24 @@ class _JournalPageState extends State<JournalPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
       appBar: AppBar(
+        elevation: 0,
         centerTitle: true,
-        title: const Text("Period Journal"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () =>
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsPage())),
-          )
-        ],
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, size: 30),
+          onPressed: () {
+            Navigator.pop(context); // returns to previous screen (Home)
+          },
+        ),
+        title: const Text(
+          "Period Journal",
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
-
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),

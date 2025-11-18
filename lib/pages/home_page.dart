@@ -88,6 +88,9 @@ class _CycleTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const totalDays = 28;
+    const spacing = 4.0;
+
     const menstruation = Colors.red;
     const follicular = Colors.teal;
     const ovulation = Colors.blue;
@@ -97,21 +100,75 @@ class _CycleTimeline extends StatelessWidget {
       ...List.filled(4, menstruation),
       ...List.filled(6, follicular),
       ...List.filled(4, ovulation),
-      ...List.filled(6, luteal)
+      ...List.filled(6, luteal),
+      ...List.filled(8, Colors.purple),
     ];
 
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(colors.length, (i) {
-            bool isToday = i == 10;
+    // Labels at: 2nd, 7th, 12th, 17th, 22nd, 27th dots
+    const labelDays = [1, 6, 11, 16, 21, 26];
 
-            return Column(
-              children: [
-                Container(
-                  width: isToday ? 14 : 10,
-                  height: isToday ? 14 : 10,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxWidth = constraints.maxWidth;
+
+        // dot size
+        double dotSize =
+            (maxWidth - (spacing * (totalDays - 1))) / totalDays;
+        dotSize = dotSize.clamp(6.0, 14.0);
+
+        // dot centers
+        final dotCenters = List.generate(totalDays, (i) {
+          return i * (dotSize + spacing) + dotSize / 2;
+        });
+
+        // label positions + texts
+        List<double> labelLefts = [];
+        List<String> labelTexts = [];
+
+        // Example cycle start date – replace with real one later
+        final DateTime start = DateTime(2024, 11, 1);
+
+        for (int i = 0; i < labelDays.length; i++) {
+          final int index = labelDays[i];
+
+          // ✅ date logic:
+          // first label: +index days
+          // other labels: +index + 1 days
+          final int extraDay = (i == 0) ? 0 : 1;
+          final DateTime date =
+          start.add(Duration(days: index + extraDay));
+          final String label = "${date.month}/${date.day}";
+
+          // measure text
+          final tp = TextPainter(
+            text: TextSpan(
+              text: label,
+              style: const TextStyle(fontSize: 10),
+            ),
+            textDirection: TextDirection.ltr,
+          )..layout();
+
+          final double labelWidth = tp.width;
+
+          // center under its dot
+          final double left = dotCenters[index] - (labelWidth / 2);
+
+          labelLefts.add(left);
+          labelTexts.add(label);
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // DOTS
+            Wrap(
+              spacing: spacing,
+              children: List.generate(totalDays, (i) {
+                bool isToday = i == 10;
+
+                return Container(
+                  width: dotSize,
+                  height: dotSize,
                   decoration: BoxDecoration(
                     color: isToday ? Colors.white : colors[i],
                     border: isToday
@@ -119,14 +176,34 @@ class _CycleTimeline extends StatelessWidget {
                         : null,
                     shape: BoxShape.circle,
                   ),
-                ),
-              ],
-            );
-          }),
-        ),
-        const SizedBox(height: 6),
-        const Text("11/17", style: TextStyle(fontSize: 10)),
-      ],
+                );
+              }),
+            ),
+
+            const SizedBox(height: 10),
+
+            // LABELS
+            SizedBox(
+              width: maxWidth,
+              height: 16,
+              child: Stack(
+                children: List.generate(labelDays.length, (i) {
+                  return Positioned(
+                    left: labelLefts[i],
+                    child: Text(
+                      labelTexts[i],
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
