@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -61,9 +62,10 @@ class _CurrentCycleStatusCard extends StatelessWidget {
             children: const [
               Expanded(
                 child: _MetaBox(
-                  icon: Icons.brightness_5,
+                  icon: Icons.bedtime,
                   title: "Current Phase",
-                  subtitle: "Ovulation\n11/16 - 11/19",
+                  subtitle: "Ovulation",
+                  details: "11/16 - 11/19",
                 ),
               ),
               SizedBox(width: 12),
@@ -71,7 +73,8 @@ class _CurrentCycleStatusCard extends StatelessWidget {
                 child: _MetaBox(
                   icon: Icons.calendar_today,
                   title: "Next Period",
-                  subtitle: "In 14 days\n12/1",
+                  subtitle: "In 14 days",
+                  details: "12/1",
                 ),
               ),
             ],
@@ -82,7 +85,9 @@ class _CurrentCycleStatusCard extends StatelessWidget {
   }
 }
 
-/// Timeline visualization (dummy)
+/// --------------------------------------------
+/// TIMELINE
+/// --------------------------------------------
 class _CycleTimeline extends StatelessWidget {
   const _CycleTimeline();
 
@@ -104,7 +109,7 @@ class _CycleTimeline extends StatelessWidget {
       ...List.filled(8, Colors.purple),
     ];
 
-    // Labels at: 2nd, 7th, 12th, 17th, 22nd, 27th dots
+    // Labels at: 2nd, 7th, 12th, 17th, 22nd, 27th
     const labelDays = [1, 6, 11, 16, 21, 26];
 
     return LayoutBuilder(
@@ -125,21 +130,16 @@ class _CycleTimeline extends StatelessWidget {
         List<double> labelLefts = [];
         List<String> labelTexts = [];
 
-        // Example cycle start date – replace with real one later
         final DateTime start = DateTime(2024, 11, 1);
 
         for (int i = 0; i < labelDays.length; i++) {
           final int index = labelDays[i];
 
-          // ✅ date logic:
-          // first label: +index days
-          // other labels: +index + 1 days
           final int extraDay = (i == 0) ? 0 : 1;
           final DateTime date =
           start.add(Duration(days: index + extraDay));
           final String label = "${date.month}/${date.day}";
 
-          // measure text
           final tp = TextPainter(
             text: TextSpan(
               text: label,
@@ -149,8 +149,6 @@ class _CycleTimeline extends StatelessWidget {
           )..layout();
 
           final double labelWidth = tp.width;
-
-          // center under its dot
           final double left = dotCenters[index] - (labelWidth / 2);
 
           labelLefts.add(left);
@@ -160,7 +158,6 @@ class _CycleTimeline extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // DOTS
             Wrap(
               spacing: spacing,
               children: List.generate(totalDays, (i) {
@@ -182,7 +179,6 @@ class _CycleTimeline extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            // LABELS
             SizedBox(
               width: maxWidth,
               height: 16,
@@ -208,7 +204,9 @@ class _CycleTimeline extends StatelessWidget {
   }
 }
 
-/// Legend
+/// --------------------------------------------
+/// LEGEND
+/// --------------------------------------------
 class _CycleLegend extends StatelessWidget {
   const _CycleLegend();
 
@@ -288,7 +286,7 @@ class _OvulationPhaseCard extends StatelessWidget {
 }
 
 /// --------------------------------------------
-/// Decorative separator (replace w/ SVG later)
+/// Decorative separator
 /// --------------------------------------------
 class _SeparatorSquiggle extends StatelessWidget {
   const _SeparatorSquiggle();
@@ -329,12 +327,10 @@ class _PredictedBodyChangesCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Tabs (dummy)
           Row(
             children: [
               Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
                   borderRadius: BorderRadius.circular(20),
@@ -355,7 +351,6 @@ class _PredictedBodyChangesCard extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // Chart placeholder
           Container(
             height: 140,
             decoration: BoxDecoration(
@@ -375,9 +370,8 @@ class _PredictedBodyChangesCard extends StatelessWidget {
 }
 
 /// --------------------------------------------
-/// Reusable UI Helpers
+/// REUSABLE HELPERS
 /// --------------------------------------------
-
 class _AppCard extends StatelessWidget {
   final Widget child;
   const _AppCard({required this.child});
@@ -398,13 +392,17 @@ class _AppCard extends StatelessWidget {
 
 class _MetaBox extends StatelessWidget {
   final IconData icon;
-  final String title;
-  final String subtitle;
+  final String title;      // subtle top line
+  final String subtitle;   // emphasized line
+  final String details;    // supporting line
+
+  static final AutoSizeGroup subtitleGroup = AutoSizeGroup();
 
   const _MetaBox({
     required this.icon,
     required this.title,
     required this.subtitle,
+    required this.details,
   });
 
   @override
@@ -415,16 +413,60 @@ class _MetaBox extends StatelessWidget {
         color: Colors.grey.shade100,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,  // ⬅ Center vertically
         children: [
-          Icon(icon, color: Colors.blue),
-          const SizedBox(height: 8),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          Padding(
+            padding: const EdgeInsets.only(right: 10),   // ⬅ removed top padding
+            child: Icon(
+              icon,
+              color: Colors.blue,
+              size: 20,
+            ),
+          ),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Subtle top label
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 11.5,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+
+                const SizedBox(height: 4),
+
+                // Bold main info (auto-scaling)
+                AutoSizeText(
+                  subtitle,
+                  maxLines: 1,
+                  minFontSize: 10,
+                  maxFontSize: 16,
+                  group: subtitleGroup,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                  ),
+                ),
+
+                const SizedBox(height: 4),
+
+                // Supporting third line
+                Text(
+                  details,
+                  style: const TextStyle(
+                    fontSize: 11.0,
+                    color: Colors.black54,
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
