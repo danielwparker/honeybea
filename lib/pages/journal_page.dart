@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'settings_page.dart';
 
 class JournalPage extends StatefulWidget {
   const JournalPage({super.key});
@@ -93,7 +92,6 @@ class _JournalPageState extends State<JournalPage> {
         ),
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-
       body: SafeArea(
         child: Stack(
           children: [
@@ -122,9 +120,7 @@ class _JournalPageState extends State<JournalPage> {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
                     _journalCard(
                       child: _FlowSpottingDischargeSection(
                         flowValue: flowValue,
@@ -134,38 +130,37 @@ class _JournalPageState extends State<JournalPage> {
                         spottingOptions: spottingOptions,
                         dischargeOptions: dischargeOptions,
                         onFlowChanged: (v) => setState(() => flowValue = v),
-                        onSpottingChanged: (i) => setState(() => spottingIndex = i),
-                        onDischargeChanged: (i) => setState(() => dischargeIndex = i),
+                        onSpottingChanged: (i) =>
+                            setState(() => spottingIndex = i),
+                        onDischargeChanged: (i) =>
+                            setState(() => dischargeIndex = i),
                       ),
                     ),
-
                     const _SquiggleSeparator(),
                     const SizedBox(height: 12),
-
                     _journalCard(
                       child: _SymptomSection(
                         title: "Physical Symptoms",
-                        desc: "Rate the intensity from 0 (none) to 4 (very severe)",
+                        desc:
+                            "Rate the intensity from 0 (none) to 4 (very severe)",
                         symptoms: physicalSymptoms,
                         onChanged: (symptom, value) {
                           setState(() => physicalSymptoms[symptom] = value);
                         },
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
                     _journalCard(
                       child: _SymptomSection(
                         title: "Emotional Symptoms",
-                        desc: "Rate the intensity from 0 (none) to 4 (very severe)",
+                        desc:
+                            "Rate the intensity from 0 (none) to 4 (very severe)",
                         symptoms: emotionalSymptoms,
                         onChanged: (symptom, value) {
                           setState(() => emotionalSymptoms[symptom] = value);
                         },
                       ),
                     ),
-
                     const SizedBox(height: 40),
                   ],
                 ),
@@ -181,25 +176,25 @@ class _JournalPageState extends State<JournalPage> {
                 duration: const Duration(milliseconds: 300),
                 child: showSaveButton
                     ? SizedBox(
-                  key: const ValueKey("save_button"),
-                  height: 55,
-                  child: ElevatedButton(
-                    onPressed: () => print("Save Entry"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFFEE8C),
-                      foregroundColor: Colors.black,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    child: const Text("Save Entry"),
-                  ),
-                )
+                        key: const ValueKey("save_button"),
+                        height: 55,
+                        child: ElevatedButton(
+                          onPressed: () => print("Save Entry"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFEE8C),
+                            foregroundColor: Colors.black,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          child: const Text("Save Entry"),
+                        ),
+                      )
                     : const SizedBox.shrink(),
               ),
             ),
@@ -277,14 +272,14 @@ class _FlowSpottingDischargeSection extends StatelessWidget {
             const Text("Flow",
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
             const Spacer(),
-            Text(flowLabel, style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87)),
+            Text(flowLabel,
+                style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87)),
           ],
         ),
         const SizedBox(height: 10),
-
         SliderTheme(
           data: SliderTheme.of(context).copyWith(
             activeTrackColor: const Color(0xFFFFEE8C),
@@ -302,9 +297,7 @@ class _FlowSpottingDischargeSection extends StatelessWidget {
             onChanged: onFlowChanged,
           ),
         ),
-
         const SizedBox(height: 20),
-
         const Text("Spotting",
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
         const SizedBox(height: 10),
@@ -313,9 +306,7 @@ class _FlowSpottingDischargeSection extends StatelessWidget {
           selectedIndex: spottingIndex,
           onSelect: onSpottingChanged,
         ),
-
         const SizedBox(height: 20),
-
         const Text("Discharge",
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
         const SizedBox(height: 10),
@@ -353,7 +344,7 @@ class _FlowSpottingDischargeSection extends StatelessWidget {
                 // you can adjust height slightly if needed
                 decoration: BoxDecoration(
                   color:
-                  selected ? const Color(0xFFFFEE8C) : Colors.grey.shade100,
+                      selected ? const Color(0xFFFFEE8C) : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 alignment: Alignment.center,
@@ -403,10 +394,8 @@ class _SymptomSection extends StatelessWidget {
         Text(title,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
         const SizedBox(height: 4),
-        Text(desc,
-            style: const TextStyle(fontSize: 13, color: Colors.black54)),
+        Text(desc, style: const TextStyle(fontSize: 13, color: Colors.black54)),
         const SizedBox(height: 12),
-
         ...symptoms.keys.map((symptom) {
           final numeric = symptoms[symptom]!.round();
           final label = severityLabels[numeric]!;
@@ -425,9 +414,7 @@ class _SymptomSection extends StatelessWidget {
                             fontSize: 14, fontWeight: FontWeight.w600)),
                   ],
                 ),
-
                 const SizedBox(height: 8),
-
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
                     activeTrackColor: const Color(0xFFFFEE8C),
@@ -492,19 +479,19 @@ class CircleThumbShape extends SliderComponentShape {
 
   @override
   void paint(
-      PaintingContext context,
-      Offset center, {
-        required Animation<double> activationAnimation,
-        required Animation<double> enableAnimation,
-        required bool isDiscrete,
-        required TextPainter? labelPainter,
-        required RenderBox parentBox,
-        required SliderThemeData sliderTheme,
-        required TextDirection textDirection,
-        required double value,
-        required double textScaleFactor,
-        required Size sizeWithOverflow,
-      }) {
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter? labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {
     final canvas = context.canvas;
 
     final outerPaint = Paint()
