@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'pages/home_page.dart';
+import 'pages/calendar_page.dart';
+import 'pages/analysis_page.dart';
+import 'pages/donate_page.dart';
+import 'pages/journal_page.dart';
+import 'pages/settings_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,119 +13,202 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Butt Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'App Scaffold',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        colorSchemeSeed: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MainShell(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class MainShell extends StatefulWidget {
+  const MainShell({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainShell> createState() => _MainShellState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MainShellState extends State<MainShell> {
+  int _index = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  final List<Widget> _pages = const [
+    HomePage(),
+    CalendarPage(),
+    AnalysisPage(),
+    DonatePage(),
+  ];
+
+  void _openJournal() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const JournalPage()),
+    );
+  }
+
+  void _openSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SettingsPage()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        centerTitle: true,
+        title: Text(
+          _index == 0 ? "Your cycle" : ['Calendar', 'Analysis', 'Donate'][_index - 1],
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: _openSettings,
+          ),
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+
+
+      body: _pages[_index],
+
+      floatingActionButton: Container(
+        height: 62,
+        width: 62,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: const Color(0xFFFFEE8C), // Updated yellow
+          /*border: Border.all(
+            color: Colors.black.withOpacity(0.25), // Soft outline
+            width: 1.5,
+          ),*/
+        ),
+        child: FloatingActionButton(
+          onPressed: _openJournal,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          splashColor: Colors.black12,
+          highlightElevation: 0,
+          child: const Icon(
+            Icons.edit,
+            color: Colors.black,
+            size: 28,
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              offset: const Offset(0, -2),
+              blurRadius: 12,
+            )
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          child: BottomAppBar(
+            color: Colors.white,
+            shape: const CircularNotchedRectangle(),
+            notchMargin: 8,
+            elevation: 0,
+            child: SizedBox(
+              height: 70,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _navItem(
+                    index: 0,
+                    iconFilled: Icons.home,
+                    iconOutlined: Icons.home_outlined,
+                    label: "Home",
+                  ),
+                  _navItem(
+                    index: 1,
+                    iconFilled: Icons.calendar_today,
+                    iconOutlined: Icons.calendar_today_outlined,
+                    label: "Calendar",
+                  ),
+                  const SizedBox(width: 5), // Space under FAB
+                  _navItem(
+                    index: 2,
+                    iconFilled: Icons.auto_graph,
+                    iconOutlined: Icons.auto_graph_outlined,
+                    label: "Analysis",
+                  ),
+                  _navItem(
+                    index: 3,
+                    iconFilled: Icons.favorite,
+                    iconOutlined: Icons.favorite_border,
+                    label: "Donate",
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _navItem({
+    required int index,
+    required IconData iconFilled,
+    required IconData iconOutlined,
+    required String label,
+  }) {
+    final isSelected = _index == index;
+
+    return Theme(
+      data: Theme.of(context).copyWith(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+      ),
+      child: InkWell(
+        onTap: () => setState(() => _index = index),
+        child: SizedBox(
+          width: 60,
+          height: 60,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                isSelected ? iconFilled : iconOutlined,
+                size: 26,
+                color: isSelected ? Colors.blue : Colors.grey,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: isSelected ? Colors.blue : Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
